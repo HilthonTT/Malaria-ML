@@ -13,7 +13,7 @@ class CustomBCE(tf.keras.losses.Loss):
         bce = BinaryCrossentropy()
         return bce(y_true, y_pred) * self.FACTOR
     
-class CustomAccuracy(tf.keras.metric.Metric):
+class CustomAccuracy(tf.keras.metrics.Metric):
     def __init__(self, name='CustomAccuracy', FACTOR=1):
         super(CustomAccuracy, self).__init__()
 

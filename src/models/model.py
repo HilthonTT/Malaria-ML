@@ -21,7 +21,7 @@ from keras.metrics import (
 
 from models.custom import CustomAccuracy, CustomBCE
 
-IM_SIZE = 224
+IM_SIZE = 244
 FACTOR = 1
 
 def get_lenet_model(input_shape=(IM_SIZE, IM_SIZE, 3), dropout_rate=0, regularization_rate=0.01):
