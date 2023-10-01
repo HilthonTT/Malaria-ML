@@ -43,7 +43,7 @@ def training_block(model, x_batch, y_batch):
 @tf.function
 def val_block(model, x_batch_val, y_batch_val):
     y_pred_val = model(x_batch_val, training=False)
-    loss_val = custom_bce(y_batch_val, y_pred_val)
+    loss_val = custom_bce(FACTOR)(y_batch_val, y_pred_val)
     METRIC_VAL.update_state(y_batch_val, y_pred_val)
 
     return loss_val
