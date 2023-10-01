@@ -1,7 +1,17 @@
-from keras.src.utils import losses_utils
 from keras.losses import BinaryCrossentropy
 from keras.metrics import binary_accuracy
 import tensorflow as tf
+
+def custom_bce(FACTOR):
+    def loss(y_true, y_pred):
+        bce = BinaryCrossentropy()
+        return bce(y_true, y_pred) * FACTOR
+    return loss
+
+def custom_accuracy(FACTOR):
+    def metric(y_true, y_pred):
+        return binary_accuracy(y_true, y_pred) * FACTOR
+    return metric
 
 class CustomBCE(tf.keras.losses.Loss):
     def __init__(self, FACTOR):
