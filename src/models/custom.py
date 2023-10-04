@@ -39,5 +39,5 @@ class CustomAccuracy(tf.keras.metrics.Metric):
     def result(self):
         return self.accuracy
 
-    def reset_states(self):
+    def reset_state(self):
         self.accuracy.assign(0.)

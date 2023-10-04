@@ -14,7 +14,7 @@ transforms = A.Compose([
     A.RandomRotate90(),
     A.GridDistortion(),
     A.RandomBrightnessContrast(),
-    A.Cutout(),
+    # A.Cutout(),
     A.Sharpen(),
 ])
 

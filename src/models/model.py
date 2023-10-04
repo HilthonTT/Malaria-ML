@@ -90,4 +90,4 @@ def compile_model(model, learning_rate = 0.01):
     )
 
 def save_model(model):
-    model.save_weights("/weights")
+    model.save_weights("./weights")

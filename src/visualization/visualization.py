@@ -10,3 +10,9 @@ def show_loss(history):
     
     plt.legend(['train_loss', "val_loss"])
     plt.show()
+    
+def show_image(image):
+    plt.plot()
+    plt.imshow(image)
+    
+    plt.show()
