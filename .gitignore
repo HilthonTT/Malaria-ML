@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # Ignore Python virtual environment
 /env/
+/src/scripts/weights

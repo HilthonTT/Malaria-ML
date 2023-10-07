@@ -21,7 +21,7 @@ from keras.metrics import (
 
 from models.custom import CustomAccuracy, CustomBCE
 
-IM_SIZE = 244
+IM_SIZE = 224
 FACTOR = 1
 
 def get_lenet_model(input_shape=(IM_SIZE, IM_SIZE, 3), dropout_rate=0, regularization_rate=0.01):
@@ -86,8 +86,12 @@ def compile_model(model, learning_rate = 0.01):
     model.compile(
         optimizer=Adam(learning_rate),
         loss=CustomBCE(FACTOR),
-        metrics=CustomAccuracy(),
+        metrics=metrics,
     )
 
 def save_model(model):
-    model.save_weights("./weights")
+    model.save_weights("./weights/")
+    
+def load_model(path = "./weights/"):
+    model = Sequential()
+    return model.load_weights(path)

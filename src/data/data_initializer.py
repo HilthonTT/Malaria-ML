@@ -3,19 +3,13 @@ from keras.layers import Resizing, Rescaling
 import tensorflow as tf
 import albumentations as A
 
-IM_SIZE = 244
+IM_SIZE = 224
 
 transforms = A.Compose([
     A.Resize(IM_SIZE, IM_SIZE),
-    A.OneOf([
-        A.HorizontalFlip(),
-        A.VerticalFlip(),
-    ], p=0.3),
+    A.HorizontalFlip(p=0.5),
     A.RandomRotate90(),
-    A.GridDistortion(),
-    A.RandomBrightnessContrast(),
-    # A.Cutout(),
-    A.Sharpen(),
+    A.RandomBrightnessContrast(p=0.2), 
 ])
 
 resize_rescale_layers = Sequential([
@@ -24,11 +18,10 @@ resize_rescale_layers = Sequential([
 ])
 
 def aug_albument(image):
-    data = { "image": image }
-    image = transforms(**data)
+    data = {"image": image}
+    image = transforms(**data)["image"]  
 
-    image = image["image"]
-    image = tf.cast(image/255, tf.float32)
+    image = tf.cast(image / 255, tf.float32)
 
     return image
 
@@ -60,7 +53,7 @@ def get_datasets(dataset, TRAIN_RATIO, VAL_RATIO, TEST_RATIO):
     train_dataset = (
         train_dataset
         .shuffle(buffer_size=1024, reshuffle_each_iteration=True)
-        .map(process_data)
+        .map(resize_rescale)
         .batch(BATCH_SIZE)
         .prefetch(tf.data.AUTOTUNE)
     )

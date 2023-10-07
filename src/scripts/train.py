@@ -6,39 +6,64 @@ sys.path.append(src_dir)
 
 import tensorflow_datasets as tfds
 import tensorflow as tf
+from keras.callbacks import LearningRateScheduler
 from visualization.visualization import show_image, show_loss
 from data.data_initializer import get_datasets
 from models.model import get_lenet_model, compile_model, save_model
-from models.custom import custom_bce
 
+METRIC_DIR = './logs/metrics'
 TRAIN_RATIO = 0.8
 VAL_RATIO = 0.1
 TEST_RATIO = 0.1
 
-EPOCHS = 20
+EPOCHS = 10
 
+def determine_parasite(x):
+    if ( x < 0.5):
+        return str("Parasitized")
+    return str("Uninfected")
+
+def show_first_image(dataset):
+    for batch in dataset.take(1): 
+        images, labels = batch 
+        image_shape = images[0].shape 
+        show_image(images[0])
+        print("Size of one image:", image_shape)
+        
+def scheduler(epoch, lr):
+    train_writer = tf.summary.create_file_writer(METRIC_DIR)
+    if epoch <= 3:
+        learning_rate = lr
+    else:
+        learning_rate = lr * tf.math.exp(-0.1)
+
+    with train_writer.as_default():
+        tf.summary.scalar("Learning Rate", data=learning_rate, step=epoch)
+        
+    return learning_rate
+        
 def main():
     dataset, _ = tfds.load("malaria", with_info=True, as_supervised=True, split=['train'])
 
     train_dataset, val_dataset, test_dataset = get_datasets(dataset, TRAIN_RATIO, VAL_RATIO, TEST_RATIO) 
 
-    for batch in train_dataset.take(1): 
-        images, labels = batch 
-        image_shape = images[0].shape 
-        show_image(images[0])
-        print("Size of one image:", image_shape)
+    show_first_image(val_dataset)
 
     model = get_lenet_model()
     compile_model(model)
     
+    
     tensorboard_callback = tf.keras.callbacks.TensorBoard("./logs")
+    scheduler_callback = LearningRateScheduler(scheduler, verbose=1)
 
     history = model.fit(
         train_dataset, 
         validation_data=val_dataset, 
         epochs=EPOCHS, 
         verbose=1,
-        callbacks=[tensorboard_callback])
+        callbacks=[tensorboard_callback, scheduler_callback])
+    
+    print(history.history)
     
     save_model(model)
     
