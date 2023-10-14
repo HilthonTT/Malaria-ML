@@ -53,7 +53,7 @@ def get_datasets(dataset, TRAIN_RATIO, VAL_RATIO, TEST_RATIO):
     train_dataset = (
         train_dataset
         .shuffle(buffer_size=1024, reshuffle_each_iteration=True)
-        .map(resize_rescale)
+        .map(process_data)
         .batch(BATCH_SIZE)
         .prefetch(tf.data.AUTOTUNE)
     )

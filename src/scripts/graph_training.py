@@ -7,6 +7,7 @@ sys.path.append(src_dir)
 
 import datetime
 import tensorflow as tf
+import tensorflow_datasets as tfds
 from keras.optimizers import Adam
 from keras.metrics import BinaryAccuracy
 from data.data_initializer import get_datasets
@@ -15,14 +16,18 @@ from models.custom import custom_bce
 
 FACTOR = 1
 
+TRAIN_RATIO = 0.8
+VAL_RATIO = 0.1
+TEST_RATIO = 0.1
+
 OPTIMIZER = Adam(learning_rate=0.01)
 METRIC = BinaryAccuracy()
 METRIC_VAL = BinaryAccuracy()
-EPOCHS = 3
+EPOCHS = 15
 
 CURRENT_TIME = datetime.datetime.now().strftime("%d%m%y - %H%M%S")
-CUSTOM_TRAIN_DIR = f"./custom/logs/{CURRENT_TIME}/custom/train"
-CUSTOM_VAL_DIR = f'./custom/logs/{CURRENT_TIME}/custom/val'
+CUSTOM_TRAIN_DIR = f"./logs/{CURRENT_TIME}/custom/train"
+CUSTOM_VAL_DIR = f'./logs/{CURRENT_TIME}/custom/val'
 
 @tf.function
 def training_block(model, x_batch, y_batch):
@@ -77,15 +82,21 @@ def nearalearn(model, loss_function, metric, val_metric, optimizer, train_datase
     
     
 def main():
-    # nearalearn(
-    #     model, 
-    #     custom_bce,
-    #     metric=METRIC, 
-    #     val_metric=METRIC_VAL, 
-    #     optimizer=OPTIMIZER, 
-    #     train_dataset=train_dataset,
-    #     val_dataset=val_dataset, 
-    #     epochs=EPOCHS)
+    dataset, _ = tfds.load("malaria", with_info=True, as_supervised=True, split=['train'])
+
+    train_dataset, val_dataset, test_dataset = get_datasets(dataset, TRAIN_RATIO, VAL_RATIO, TEST_RATIO) 
+
+    model = get_lenet_model()
+    
+    nearalearn(
+        model, 
+        custom_bce,
+        metric=METRIC, 
+        val_metric=METRIC_VAL, 
+        optimizer=OPTIMIZER, 
+        train_dataset=train_dataset,
+        val_dataset=val_dataset, 
+        epochs=EPOCHS)
     
     pass
     

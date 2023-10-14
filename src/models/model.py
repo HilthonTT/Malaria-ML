@@ -89,7 +89,7 @@ def compile_model(model, learning_rate = 0.01):
         metrics=metrics,
     )
 
-def save_model(model):
+def save_model(model: Sequential):
     model.save_weights("./weights/")
     
 def load_model(path = "./weights/"):
