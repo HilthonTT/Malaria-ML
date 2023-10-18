@@ -51,7 +51,7 @@ def scheduler(epoch, lr):
     return learning_rate
         
 def main():
-    dataset, _ = tfds.load("malaria", with_info=True, as_supervised=True, split=['train'])
+    dataset, dataset_info = tfds.load("malaria", with_info=True, as_supervised=True, split=['train'])
 
     train_dataset, val_dataset, test_dataset = get_datasets(dataset, TRAIN_RATIO, VAL_RATIO, TEST_RATIO) 
 

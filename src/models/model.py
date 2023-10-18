@@ -1,5 +1,6 @@
 import tensorflow as tf
 from keras import Sequential
+from keras.models import load_model
 from keras.optimizers import Adam
 from keras.layers import (
     Conv2D, 
@@ -89,9 +90,9 @@ def compile_model(model, learning_rate = 0.01):
         metrics=metrics,
     )
 
+SAVE_PATH = "./models/main.h5"
 def save_model(model: Sequential):
-    model.save_weights("./weights/")
+    model.save(SAVE_PATH)
     
-def load_model(path = "./weights/"):
-    model = Sequential()
-    return model.load_weights(path)
+def load_model(path = SAVE_PATH):
+    return load_model(path)
